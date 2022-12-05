@@ -3,20 +3,20 @@ Streamlit Pandas is a component for the [Streamlit](https://streamlit.io/) libra
 
 # Installation
 1. First, install Streamlit
-```
+```python
 pip install streamlit
 ```
 2. Next, install Pandas
-```
+```python
 pip install pandas
 ```
 3. Install Streamlit Pandas
-```
+```python
 pip install streamlit-pandas
 ```
 
 # Usage
-```{python}
+```python
 import streamlit as st
 import pandas as pd
 import streamlit_pandas as sp
