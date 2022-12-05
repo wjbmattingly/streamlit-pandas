@@ -1,13 +1,13 @@
 import streamlit as st
 import pandas as pd
-import streamlit_pandas as sp
+import streamlit_pandas.streamlit_pandas as sp
 
 @st.cache(allow_output_mutation=True)
 def load_data():
     df = pd.read_csv(file)
     return df
 
-file = "../data/titanic.csv"
+file = "./data/titanic.csv"
 df = load_data()
 create_data = {"Name": "text",
                 "Sex": "multiselect",

@@ -43,7 +43,15 @@ def text_widget(df, column, ss_name):
     temp_input = st.sidebar.text_input(f"{column.title()}", key=ss_name)
     all_widgets.append((ss_name, "text", column))
 
-def create_widgets(df, create_data, ignore_columns=[]):
+def create_widgets(df, create_data={}, ignore_columns=[]):
+    """
+    This function will create all the widgets from your Pandas DataFrame and return them.
+    df => a Pandas DataFrame
+    create_data => Optional dictionary whose keys are the Pandas DataFrame columns
+        and whose values are the type of widget you wish to make.
+        supported: - multiselect, select, text
+    ignore_columns => columns to entirely ignore when creating the widgets.
+    """
     for column in ignore_columns:
         df = df.drop(column, axis=1)
     global all_widgets
@@ -66,6 +74,14 @@ def create_widgets(df, create_data, ignore_columns=[]):
 
 
 def filter_df(df, all_widgets):
+    """
+    This function will take the input dataframe and all the widgets generated from
+    Streamlit Pandas. It will then return a filtered DataFrame based on the changes
+    to the input widgets.
+
+    df => the original Pandas DataFrame
+    all_widgets => the widgets created by the function create_widgets().
+    """
     res = df
     for widget in all_widgets:
         ss_name, ctype, column = widget
