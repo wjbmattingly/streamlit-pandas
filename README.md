@@ -1,5 +1,21 @@
 # Streamlit Pandas
-Streamlit Pandas is a component for the [Streamlit](https://streamlit.io/) library. It allows users to load a Pandas DataFrame and automatically generate Streamlit widgets in the sidebar. These widgets trigger filtering events within the Pandas DataFrame
+Streamlit Pandas is a component for the [Streamlit](https://streamlit.io/) library. It allows users to load a Pandas DataFrame and automatically generate Streamlit widgets in the sidebar. These widgets trigger filtering events within the Pandas DataFrame.
+
+# Support
+Current support only exists for DataFrame columns with strings and numbers (int64 and float64). A future update will include support for time-series data.
+
+By default, string data generates a text_input Streamlit widget, while numerical data creates sliders with ranges preset to the minimum and maximum values for that column. Users can pass a custom dictionary for handling specific types of data, where each key is the column in the DataFrame and the value is the streamlit widget type.
+
+Sample of a custom dictionary:
+
+```python
+create_data = {"Name": "text",
+                "Sex": "multiselect",
+                "Embarked": "multiselect",
+                "Ticket": "text",
+                "Pclass": "multiselect"}
+```
+The current version only supports: text, multiselect, and select.
 
 # Installation
 1. First, install Streamlit
