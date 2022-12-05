@@ -1,4 +1,4 @@
-![Streamlit pandas logo](images/streamlit-pandas-logo.png)
+![Streamlit pandas logo](images/streamlit-pandas-logo-blue.png)
 
 # Streamlit Pandas
 Streamlit Pandas is a component for the [Streamlit](https://streamlit.io/) library. It allows users to load a Pandas DataFrame and automatically generate Streamlit widgets in the sidebar. These widgets trigger filtering events within the Pandas DataFrame.
