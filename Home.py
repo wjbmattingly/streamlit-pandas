@@ -1,91 +1,11 @@
 import streamlit as st
 import pandas as pd
+import streamlit_pandas.streamlit_pandas as sp
 
 @st.cache(allow_output_mutation=True)
 def load_data():
     df = pd.read_csv(file)
     return df
-
-def filter_list(df, column, selected_list):
-    final = []
-    df = df[df[column].notna()]
-    for idx, row in df.iterrows():
-        if any(item in selected_list for item in row[column]):
-            final.append(row)
-    res = pd.DataFrame(final)
-    return res
-
-def filter_string(df, column, selected_list):
-    final = []
-    df = df[df[column].notna()]
-    for idx, row in df.iterrows():
-        if row[column] in selected_list:
-            final.append(row)
-    res = pd.DataFrame(final)
-    return res
-
-def number_widget(df, column, ss_name):
-    df = df[df[column].notna()]
-    max = df[column].max()
-    min = df[column].min()
-    temp_input = st.sidebar.slider(f"{column.title()}", min, max, (min, max), key=ss_name)
-    all_widgets.append((ss_name, "number", column))
-
-def create_select(df, column, ss_name, multi=False):
-    df = df[df[column].notna()]
-    options = df[column].unique()
-    options.sort()
-    if multi==False:
-        temp_input = st.sidebar.selectbox(f"{column.title()}", options, key=ss_name)
-        all_widgets.append((ss_name, "select", column))
-    else:
-        temp_input = st.sidebar.multiselect(f"{column.title()}", options, key=ss_name)
-        all_widgets.append((ss_name, "multiselect", column))
-
-
-def text_widget(df, column, ss_name):
-    temp_input = st.sidebar.text_input(f"{column.title()}", key=ss_name)
-    all_widgets.append((ss_name, "text", column))
-
-def create_widgets(df, create_data):
-    global all_widgets
-    all_widgets = []
-    for ctype, column in zip(df.dtypes, df.columns):
-        if column in create_data:
-            if create_data[column] == "text":
-                text_widget(df, column, column.lower())
-            elif create_data[column] == "select":
-                create_select(df, column, column.lower(), multi=False)
-            elif create_data[column] == "multiselect":
-                create_select(df, column, column.lower(), multi=True)
-        else:
-            if ctype in ["int64", "float64"]:
-                number_widget(df, column, column.lower())
-            elif ctype == "object":
-                if str(type(df[column].tolist()[0])) == "<class 'str'>":
-                    text_widget(df, column, column.lower())
-    return all_widgets
-
-
-def filter_df(df, all_widgets):
-    res = df
-    for widget in all_widgets:
-        ss_name, ctype, column = widget
-        data = st.session_state[ss_name]
-        if data:
-            if ctype == "text":
-                if data != "":
-                    res = res.loc[res[column].str.contains(data)]
-            elif ctype == "select":
-                res = filter_string(res, column, data)
-            elif ctype == "multiselect":
-                res = filter_string(res, column, data)
-            elif ctype == "number":
-                min, max = data
-                res = res.loc[(res[column] >= min) & (res[column] <= max)]
-    return res
-
-
 
 file = "./data/titanic.csv"
 df = load_data()
@@ -95,8 +15,8 @@ create_data = {"Name": "text",
                 "Ticket": "text",
                 "Pclass": "multiselect"}
 
-all_widgets = create_widgets(df, create_data)
-res = filter_df(df, all_widgets)
+all_widgets = sp.create_widgets(df, create_data, ignore_columns=["PassengerId"])
+res = sp.filter_df(df, all_widgets)
 st.title("Streamlit AutoPandas")
 st.header("Original DataFrame")
 st.write(df)
