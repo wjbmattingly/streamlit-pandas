@@ -2,15 +2,6 @@ import streamlit as st
 import pandas as pd
 
 
-def filter_list(df, column, selected_list):
-    final = []
-    df = df[df[column].notna()]
-    for idx, row in df.iterrows():
-        if any(item in selected_list for item in row[column]):
-            final.append(row)
-    res = pd.DataFrame(final)
-    return res
-
 def filter_string(df, column, selected_list):
     final = []
     df = df[df[column].notna()]
