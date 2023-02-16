@@ -39,7 +39,7 @@ import streamlit as st
 import pandas as pd
 import streamlit_pandas as sp
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data
 def load_data():
     df = pd.read_csv(file)
     return df
