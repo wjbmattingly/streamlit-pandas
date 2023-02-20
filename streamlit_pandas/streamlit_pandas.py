@@ -13,8 +13,15 @@ def filter_string(df, column, selected_list):
 
 def number_widget(df, column, ss_name):
     df = df[df[column].notna()]
-    max = df[column].max()
-    min = df[column].min()
+    max = float(df[column].max())
+    min = float(df[column].min())
+    temp_input = st.sidebar.slider(f"{column.title()}", min, max, (min, max), key=ss_name)
+    all_widgets.append((ss_name, "number", column))
+
+def number_widget_int(df, column, ss_name):
+    df = df[df[column].notna()]
+    max = int(df[column].max())
+    min = int(df[column].min())
     temp_input = st.sidebar.slider(f"{column.title()}", min, max, (min, max), key=ss_name)
     all_widgets.append((ss_name, "number", column))
 
@@ -56,8 +63,10 @@ def create_widgets(df, create_data={}, ignore_columns=[]):
             elif create_data[column] == "multiselect":
                 create_select(df, column, column.lower(), multi=True)
         else:
-            if ctype in ["int64", "float64"]:
+            if ctype == "float64":
                 number_widget(df, column, column.lower())
+            elif ctype == "int64":
+                number_widget_int(df, column, column.lower())
             elif ctype == "object":
                 if str(type(df[column].tolist()[0])) == "<class 'str'>":
                     text_widget(df, column, column.lower())
