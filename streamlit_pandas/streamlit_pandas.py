@@ -53,6 +53,8 @@ def create_widgets(df, create_data={}, ignore_columns=[]):
     for column in ignore_columns:
         df = df.drop(column, axis=1)
     global all_widgets
+    global is_case_sensitive
+    is_case_sensitive = st.sidebar.checkbox('case sensitive search', value=True)
     all_widgets = []
     for ctype, column in zip(df.dtypes, df.columns):
         if column in create_data:
@@ -89,7 +91,10 @@ def filter_df(df, all_widgets):
         if data:
             if ctype == "text":
                 if data != "":
-                    res = res.loc[res[column].str.contains(data)]
+                    if is_case_sensitive:
+                        res = res.loc[res[column].str.contains(data)]
+                    else:
+                        res = res.loc[res[column].str.lower().str.contains(data.lower())]
             elif ctype == "select":
                 res = filter_string(res, column, data)
             elif ctype == "multiselect":
