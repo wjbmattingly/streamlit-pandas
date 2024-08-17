@@ -40,6 +40,15 @@ def create_select(df, column, ss_name, multi=False):
 def text_widget(df, column, ss_name):
     temp_input = st.sidebar.text_input(f"{column.title()}", key=ss_name)
     all_widgets.append((ss_name, "text", column))
+    
+def date_widget(df, column, ss_name):
+    df = df[df[column].notna()]
+    df=df.copy()
+    df[column] = pd.to_datetime(df[column])  # Ensure the column is datetime type
+    min_date = df[column].min().date()
+    max_date = df[column].max().date()
+    temp_input = st.sidebar.slider(f"{column.title()}", min_date, max_date, (min_date, max_date), key=ss_name)
+    all_widgets.append((ss_name, "date", column))
 
 def create_widgets(df, create_data={}, ignore_columns=[]):
     """
@@ -62,6 +71,8 @@ def create_widgets(df, create_data={}, ignore_columns=[]):
                 create_select(df, column, column.lower(), multi=False)
             elif create_data[column] == "multiselect":
                 create_select(df, column, column.lower(), multi=True)
+            elif create_data[column] == "date":
+                date_widget(df, column, column.lower())
         else:
             if ctype == "float64":
                 number_widget(df, column, column.lower())
@@ -97,4 +108,7 @@ def filter_df(df, all_widgets):
             elif ctype == "number":
                 min, max = data
                 res = res.loc[(res[column] >= min) & (res[column] <= max)]
+            elif ctype == "date":
+                start_date, end_date = data
+                res = res.loc[(pd.to_datetime(res[column]) >= pd.to_datetime(start_date)) & (pd.to_datetime(res[column]) <= pd.to_datetime(end_date))]
     return res
